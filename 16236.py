@@ -17,51 +17,48 @@ for i in range(N):
             shark_y = idx 
             map_list[shark_x][shark_y] = 0
 
-def find_fish():
-    global shark_x
-    global shark_y
-    global size
+def find_fish(shark_x,shark_y,size):
     global N 
     diff_x = [-1,1,0,0]
     diff_y = [0,0,-1,1]
-    cnt = N*N+1
+    cnt = N*N + 1
     result = False
 
-    eatable_fish = []
-    for i in range(N):
-        for j in range(N):
-            if map_list[i][j] < size  and map_list[i][j] > 0: 
-                eatable_fish.append((i,j))
+    visited_list = [ [False]*N for i in range(N)]
+    visited_list[shark_x][shark_y] = True
 
-    for x,y in eatable_fish:
-        visited_list = [ [False]*N for i in range(N)]
-        visited_list[shark_x][shark_y] = True
-        queue = deque()
-        queue.append((shark_x,shark_y,0))
-        while queue :    
-            now_x , now_y, now_cnt= queue.popleft()
-            if now_x == x and now_y == y:
-                if now_cnt < cnt :
-                    cnt = now_cnt
-                    result = (now_x,now_y)
-                queue=[]
-                break
-            for i in range(4):
-                next_x, next_y = now_x + diff_x[i], now_y + diff_y[i]
-                if next_x < 0 or next_x >= N or next_y < 0 or next_y >= N :
-                    continue
-                if visited_list[next_x][next_y] is True :
-                    continue
-                if map_list[next_x][next_y] > size:
-                    continue
+    eatable_fish = []
+
+    queue = deque()
+    queue.append((shark_x,shark_y,0))
+    while queue:
+        now_x, now_y,now_cnt = queue.popleft() 
+        for i in range(4):
+            next_x, next_y = now_x + diff_x[i], now_y + diff_y[i]
+            if next_x < 0 or next_x >= N or next_y < 0 or next_y >= N :
+                continue
+            if visited_list[next_x][next_y] is True :
+                continue
+            if map_list[next_x][next_y] > size:
+                continue
+            if map_list[next_x][next_y] == 0 or map_list[next_x][next_y] == size:
                 visited_list[next_x][next_y] = True
                 queue.append((next_x,next_y,now_cnt+1))
+            else :
+                visited_list[next_x][next_y] = True
+                queue.append((next_x,next_y,now_cnt+1))
+                eatable_fish.append((next_x,next_y,now_cnt+1))
+    
+    if eatable_fish:
+        eatable_fish.sort(key = lambda x: (x[2],x[0],x[1]))
+        result = (eatable_fish[0][0],eatable_fish[0][1])
+        cnt = eatable_fish[0][2]
 
     return result,cnt
 time = 0
 eat = 0
 while True:
-    isFish,cnt = find_fish()
+    isFish,cnt = find_fish(shark_x,shark_y,size)
     if isFish is False:
         break
     shark_x,shark_y = isFish
