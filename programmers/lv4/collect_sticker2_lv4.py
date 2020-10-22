@@ -1,5 +1,8 @@
 def solution(sticker):
     length = len(sticker)
+    if length < 3:
+        return max(sticker)
+    
     memo1 = [0 for i in range(length)]
     memo2 = [0 for i in range(length)]
     memo1[0] = 0
@@ -13,5 +16,6 @@ def solution(sticker):
     memo1[length-1] = max([memo1[length-3]+sticker[length-1],memo1[length-2]])
 
     return max([memo1[length-1],memo1[length-2],memo2[length-1],memo2[length-2]])
+
 
 print(solution([1, 3, 2, 5, 4]))
