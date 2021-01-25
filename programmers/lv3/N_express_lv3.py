@@ -13,6 +13,7 @@ def solution(N, number):
                 for l in dp[i-j]:
                     next_set.add(k+l)
                     next_set.add(k-l)
+                    next_set.add(l-k)
                     next_set.add(k*l)
                     if l != 0:
                         next_set.add(k//l)
